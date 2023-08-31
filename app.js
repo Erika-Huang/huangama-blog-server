@@ -5,6 +5,8 @@ const json = require('koa-json') // 参数转为json对象
 const onerror = require('koa-onerror') // 错误监听
 const bodyparser = require('koa-bodyparser') // 把前端请求参数转换
 const logger = require('koa-logger')
+const log4js = require('./utils/log4js')
+
 
 const index = require('./routes/index')
 const users = require('./routes/users')
@@ -28,8 +30,7 @@ app.use(views(__dirname + '/views', {
 app.use(async (ctx, next) => {
   const start = new Date()
   await next()
-  const ms = new Date() - start
-  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+  log4js.info(`log output`)
 })
 
 // routes
@@ -38,7 +39,8 @@ app.use(users.routes(), users.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
-  console.error('server error', err, ctx)
+  // console.error('server error', err, ctx)
+  log4js.error(`${err.stack}`)
 });
 
 module.exports = app
